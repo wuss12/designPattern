@@ -3,4 +3,4 @@
 
 **类型：** 创建类模型
 **类图：**
-![Image text](designPattern/java/singleton/img/singleton.gif)
+![Image text](https://github.com/wuss12/designPattern/blob/master/java/singleton/img/singleton.gif)
