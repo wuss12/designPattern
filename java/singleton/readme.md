@@ -3,4 +3,4 @@
 
 **类型：** 创建类模型
 **类图：**
-![Image text](https://raw.githubusercontent.com/hongmaju/light7Local/master/img/productShow/20170518152848.png)
+![Image text](designPattern/java/singleton/img/singleton.gif)
