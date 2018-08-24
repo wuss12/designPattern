@@ -24,25 +24,24 @@
 ## 1.静态代理
 ***
 **第一步：创建服务类接口**
-(```)
+```
 public interface BuyHouseService {
     void buyHouse();
 }
-(```)
+```
 ***
 **第二步：实现服务接口**
-(```)
+```
 public class BuyHouseServiceImp implements BuyHouseService{
     @Override
     public void buyHouse() {
         System.out.println("I want to buy house.");
     }
 }
-
-(```)
+```
 ***
 **第三步：创建代理类**
-(```)
+```
 public class BuyHouseProxy implements BuyHouseService {
     BuyHouseService buyHouseService;
 
@@ -63,10 +62,11 @@ public class BuyHouseProxy implements BuyHouseService {
         System.out.println("after buy house");
     }
 }
-(```)
+
+```
 ***
 **第四步：编写测试类**
-(```)
+```
 public class Test {
     public static void main(String[] args) {
         BuyHouseService buyHouse = new BuyHouseServiceImp();
@@ -76,7 +76,7 @@ public class Test {
         proxy.buyHouse();
     }
 }
-(```)
+```
 
 **静态代理类总结**
 - 优点：在符合开闭原则下，实现对功能的扩展
