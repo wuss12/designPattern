@@ -82,3 +82,65 @@ public class Test {
 - 优点：在符合开闭原则下，实现对功能的扩展
 - 缺点：我们需要为每一个服务类提供一个代理类，工作量大，管理不方便，一旦接口发生
 变化，需要修改对应的代理
+
+## 2.动态代理
+
+    在动态代理中，我们不用再手动编写代理类，只需要编写一个动态处理器即可，真正的
+代理对象在运行时候，有jvm帮我们创建
+
+**第一步：编写动态处理器**
+---
+```
+public class DynamicProxyHandler implements InvocationHandler {
+    private Object object;
+
+    public DynamicProxyHandler(Object object) {
+        this.object = object;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        before();
+        Object result = method.invoke(proxy,args);
+        after();
+        return result;
+    }
+    public void before(){
+        System.out.println("before buy house");
+    }
+    public void after(){
+        System.out.println("after buy house");
+    }
+}
+```
+
+**第二步：编写测试类**
+```
+public class Test {
+    public static void main(String[] args) {
+        BuyHouseService houseService = new BuyHouseServiceImp();
+        BuyHouseService proxyHouse = (BuyHouseService) Proxy.newProxyInstance(Test.class.getClassLoader(),new Class[]{BuyHouseService.class},new DynamicProxyHandler(houseService));
+        System.out.println("----------------------");
+        proxyHouse.buyHouse();
+    }
+}
+
+```
+注意Proxy.newProxyInstance()方法接受三个参数：
+
+- ClassLoader loader:指定当前目标对象使用的类加载器,获取加载器的方法是固定的
+- Class<?>[] interfaces:指定目标对象实现的接口的类型,使用泛型方式确认类型
+- InvocationHandler:指定动态处理器，执行目标对象的方法时,会触发事件处理器的方法
+
+**动态代理总结**
+  相对于静态代理，我们的动态代理，减少了我们的工作量，减少了对业务接口的依赖，降低
+了耦合，但是仍然拜托不了，紧支持 interface 代理的桎梏
+
+## 3.cglib 代理
+ JDK实现动态代理需要实现类通过接口定义业务方法，对于没有接口的类，如何实现动态代理呢，
+ 这就需要CGLib了。CGLib采用了非常底层的字节码技术，其原理是通过字节码技术为一个类
+ 创建子类，并在子类中采用方法拦截的技术拦截所有父类方法的调用，顺势织入横切逻辑。
+ 但因为采用的是继承，所以不能对final修饰的类进行代理。JDK动态代理与CGLib动态
+ 代理均是实现Spring AOP的基础
+ 
+ 
