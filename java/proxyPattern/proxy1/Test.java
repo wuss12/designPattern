@@ -4,7 +4,7 @@ public class Test {
     public static void main(String[] args) {
         BuyHouseService buyHouse = new BuyHouseServiceImp();
         buyHouse.buyHouse();
-        System.out.println("----------------------");
+        System.out.println("-----------------------");
         BuyHouseService proxy = new BuyHouseProxy(buyHouse);
         proxy.buyHouse();
     }
