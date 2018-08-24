@@ -1,4 +1,4 @@
-#代理
+# 代理
 **代理：给某一个对象提供一个代理对象，并由代理对象控制对原对象的访问**
 
 ***
@@ -21,17 +21,17 @@
 我们以买房子为例，虽然我们可以自己去找房子但是耗时耗力，我们可以找中介，最后，由
 我们自己决定买什么    
 
-##1.静态代理
+## 1.静态代理
 ***
 **第一步：创建服务类接口**
-(''')
+(```)
 public interface BuyHouseService {
     void buyHouse();
 }
-(''')
+(```)
 ***
 **第二步：实现服务接口**
-(''')
+(```)
 public class BuyHouseServiceImp implements BuyHouseService{
     @Override
     public void buyHouse() {
@@ -39,10 +39,10 @@ public class BuyHouseServiceImp implements BuyHouseService{
     }
 }
 
-(''')
+(```)
 ***
 **第三步：创建代理类**
-(''')
+(```)
 public class BuyHouseProxy implements BuyHouseService {
     BuyHouseService buyHouseService;
 
@@ -63,10 +63,10 @@ public class BuyHouseProxy implements BuyHouseService {
         System.out.println("after buy house");
     }
 }
-(''')
+(```)
 ***
 **第四步：编写测试类**
-(''')
+(```)
 public class Test {
     public static void main(String[] args) {
         BuyHouseService buyHouse = new BuyHouseServiceImp();
@@ -76,7 +76,7 @@ public class Test {
         proxy.buyHouse();
     }
 }
-(''')
+(```)
 
 **静态代理类总结**
 - 优点：在符合开闭原则下，实现对功能的扩展
