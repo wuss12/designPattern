@@ -143,4 +143,52 @@ public class Test {
  但因为采用的是继承，所以不能对final修饰的类进行代理。JDK动态代理与CGLib动态
  代理均是实现Spring AOP的基础
  
+ **第一步：创建CGLIB代理类**
+ ```
+ public class CglibProxy implements MethodInterceptor {
+     private Object target;
  
+     public CglibProxy(Object target) {
+         this.target = target;
+     }
+ 
+     //  //给目标对象创建一个代理对象
+     public Object  getInstance(final Object target) {
+         //1.工具类
+         Enhancer en = new Enhancer();
+         //2.设置父类
+         en.setSuperclass(target.getClass());
+         //3.设置回调函数
+         en.setCallback(this);
+         //4.创建子类(代理对象)
+         return en.create();
+     }
+     @Override
+     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+         before();
+         Object result = method.invoke(target,objects);
+         after();
+         return result;
+     }
+     public void before(){
+         System.out.println("before buy house");
+     }
+     public void after(){
+         System.out.println("after buy house");
+     }
+ }
+ ```
+ **第二步：创建测试类**
+  ```
+  public class Test {
+      public static void main(String[] args) {
+          BuyHouseService buyHouse = new BuyHouseServiceImp();
+          CglibProxy cglibProxy = new CglibProxy(buyHouse);
+          BuyHouseService buyHouseCglibProxy = (BuyHouseService) cglibProxy.getInstance();
+  
+          buyHouseCglibProxy.buyHouse();
+      }
+  }
+   ```
+   
+   CGLIB代理总结： CGLIB创建的动态代理对象比JDK创建的动态代理对象的性能更高，但是CGLIB创建代理对象时所花费的时间却比JDK多得多。所以对于单例的对象，因为无需频繁创建对象，用CGLIB合适，反之使用JDK方式要更为合适一些。同时由于CGLib由于是采用动态创建子类的方法，对于final修饰的方法无法进行代理。
