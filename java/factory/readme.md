@@ -12,38 +12,37 @@
     简单工厂其实不能算作是一种设计模式，它引入了创建者的概念，将实例化的代码从应用程序中剥离。在
 创建者类的静态方法中，只处理创建对象的细节，后续创建实例的需求如需改变，只需要修改创建者类即可。
 
-`public abstract class Coffee {
+```public abstract class Coffee {
     /**
      * 获取coffee名称
      * @return
      */
     public abstract String getName();
 }
-`
-`
+
 public class Americano extends Coffee {
     @Override
     public String getName() {
         return "美式咖啡";
     }
-}`
+}
 
-`public class Cappuccino extends Coffee {
+public class Cappuccino extends Coffee {
     @Override
     public String getName() {
         return "卡布奇诺";
     }
-}`
+}
 
-`public class Latte extends Coffee {
+public class Latte extends Coffee {
     @Override
     public String getName() {
         return "拿铁";
     }
 }
-`
 
-`package factory.simpleFactory;
+
+package factory.simpleFactory;
 
 public class SimpleFactory {
     public static Coffee instanceCoffice(String type){
@@ -76,4 +75,4 @@ public class SimpleFactory {
     }
 
 }
-`
+```
