@@ -1,5 +1,10 @@
 package factory.simpleFactory;
 
+import factory.Americano;
+import factory.Cappuccino;
+import factory.Coffee;
+import factory.Latte;
+
 public class SimpleFactory {
     public static Coffee instanceCoffice(String type){
         if("americano".equalsIgnoreCase(type)){

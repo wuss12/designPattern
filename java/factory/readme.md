@@ -8,7 +8,7 @@
     我们不使用工厂模式之前代码如下：
     
     
-**2.1 简单工厂**    
+**2.1. 简单工厂**    
     简单工厂其实不能算作是一种设计模式，它引入了创建者的概念，将实例化的代码从应用程序中剥离。在
 创建者类的静态方法中，只处理创建对象的细节，后续创建实例的需求如需改变，只需要修改创建者类即可。
 
@@ -75,4 +75,52 @@ public class SimpleFactory {
     }
 
 }
+```
+
+**2.2. 工厂方法模式**
+    定义了一个创建对象的接口，由子类决定实例化哪一个实例，工厂方法，把类的实例化推迟到子类
+    场景延伸：不同的咖啡厂收到环境、原料的限制，制造出的产品有限。比如,中国的咖啡工厂只能制作 卡布奇诺 和拿铁
+而美国咖啡工厂只能生产 美式咖啡 和 开不起诺。
+
+```
+public abstract class AbstractCoffeeFactory {
+    public abstract Coffee[] createCoffee();
+}
+
+public class ChinaCoffeFactory extends AbstractCoffeeFactory {
+    @Override
+    public Coffee[] createCoffee() {
+        return new Coffee[]{new Cappuccino(),new Latte()};
+    }
+}
+
+public class AmericaCoffeFectory extends AbstractCoffeeFactory {
+    @Override
+    public Coffee[] createCoffee() {
+        return new Coffee[]{new Americano(),new Cappuccino()};
+    }
+}
+
+
+public class FactoryMethodTest {
+    private static   void show(Coffee[] coffees){
+        for (Coffee coffee : coffees){
+            System.out.println(coffee.getName());
+        }
+    }
+
+    public static void main(String[] args) {
+        AbstractCoffeeFactory chinaFactory = new ChinaCoffeFactory();
+        Coffee[] chinaCoffee = chinaFactory.createCoffee();
+        System.out.println("China coffee factory can produce :");
+        show(chinaCoffee);
+        System.out.println("-------------------------------");
+
+        AbstractCoffeeFactory ameriacFactory = new AmericaCoffeFectory();
+        Coffee[] americaCoffee = ameriacFactory.createCoffee();
+        System.out.println("America coffee factory can produce :");
+        show(americaCoffee);
+    }
+}
+
 ```
