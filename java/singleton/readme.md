@@ -154,3 +154,132 @@
 **单例和枚举**
 
 单元素的枚举类型，已经是实现单例的最佳模式
+
+**可能出现的问题以及改进**
+1. 通过反射破坏单例
+```public class SingletonDemo1 {
+    private static SingletonDemo1 instance = new SingletonDemo1();
+    private SingletonDemo1(){
+
+    }
+    public static SingletonDemo1 getInstance(){
+        return instance;
+    }
+
+    public static void main(String[] args) throws Exception{
+        SingletonDemo1 s1 = SingletonDemo1.getInstance();
+        SingletonDemo1 s2 = SingletonDemo1.getInstance();
+        System.out.println(s1 == s2);
+
+        Class clazz = SingletonDemo1.class;
+        Constructor declaredConstructor = clazz.getDeclaredConstructor(null);
+        declaredConstructor.setAccessible(true);
+        SingletonDemo1 s3 = (SingletonDemo1) declaredConstructor.newInstance(null);
+        System.out.println(s3 == s1);
+    }
+}
+```
+输出结果：
+```
+true
+false
+```
+可以针对反射破坏单例做一定的调整，来组织反射获得(让直接 只调用构造函数 抛出运行时异常即可)
+改进如下：
+```public class SingletonDemo1Change {
+    private static volatile boolean flag = true;
+    private static SingletonDemo1Change instance = new SingletonDemo1Change();
+    private SingletonDemo1Change() {
+        if (flag ) {
+            flag = false;
+        } else {
+            throw new RuntimeException("反射正则攻击单例:SingletonDemo1Change");
+        }
+    }
+
+    public static SingletonDemo1Change getInstance() {
+        return instance;
+    }
+
+    public static void main(String[] args) throws Exception {
+        SingletonDemo1Change s1 = SingletonDemo1Change.getInstance();
+        SingletonDemo1Change s2 = SingletonDemo1Change.getInstance();
+        System.out.println(s1 == s2);
+
+        Class clazz = SingletonDemo1Change.class;
+        Constructor declaredConstructor = clazz.getDeclaredConstructor(null);
+        declaredConstructor.setAccessible(true);
+        SingletonDemo1Change s3 = (SingletonDemo1Change) declaredConstructor.newInstance(null);
+        System.out.println(s3 == s1);
+    }
+}
+```
+当然使用反射 先修改 flag 在调用构造函数 也是能破坏该 单例，我们此时只讨论 只调用构造函数
+
+2. 序列化和反序列化破坏单例
+
+```public class SingletonDemo2 implements Serializable {
+    private static SingletonDemo2 instance = new SingletonDemo2();
+    private SingletonDemo2(){
+
+    }
+    public static SingletonDemo2 getInstance(){
+        return instance;
+    }
+
+    public static void main(String[] args) throws Exception{
+        SingletonDemo2 s1 = SingletonDemo2.getInstance();
+        SingletonDemo2 s2 = SingletonDemo2.getInstance();
+        System.out.println(s1 == s2);
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("tempFile"));
+        oos.writeObject(s1);
+        oos.flush();
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("tempFile"));
+        SingletonDemo2 s3 = (SingletonDemo2) ois.readObject();
+        System.out.println(s1 == s3);
+    }
+}```
+结果是：
+true
+false
+-----
+我们可以通过重写 readResolve，来解决 序列化破坏单例
+代码如下：
+
+```
+public class SingletonDemo2Change implements Serializable{
+    private static SingletonDemo2Change instance = new SingletonDemo2Change();
+    private SingletonDemo2Change(){}
+    public static SingletonDemo2Change getInstance(){
+        return instance;
+    }
+    private Object readResolve(){
+        return instance;
+    }
+
+    public static void main(String[] args) throws Exception{
+        SingletonDemo2Change s1 = getInstance();
+        SingletonDemo2Change s2 = getInstance();
+        System.out.println(s1 == s2);
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("tempFile"));
+        oos.writeObject(s1);
+        oos.flush();
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("tempFile"));
+        SingletonDemo2Change s3 = (SingletonDemo2Change) ois.readObject();
+        ois.close();
+        System.out.println(s1 == s3);
+    }
+}
+```
+结果如下:
+ture
+ture
+
+可以参考
+SerSingleton例子
