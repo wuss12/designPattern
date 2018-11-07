@@ -249,8 +249,7 @@ false
 我们可以通过重写 readResolve，来解决 序列化破坏单例
 代码如下：
 
-```
-public class SingletonDemo2Change implements Serializable{
+```public class SingletonDemo2Change implements Serializable{
     private static SingletonDemo2Change instance = new SingletonDemo2Change();
     private SingletonDemo2Change(){}
     public static SingletonDemo2Change getInstance(){
