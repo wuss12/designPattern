@@ -99,7 +99,7 @@ public class DynamicProxyHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object object, Method method, Object[] args) throws Throwable {
         before();
         Object result = method.invoke(proxy,args);
         after();
@@ -134,7 +134,7 @@ public class Test {
 
 **动态代理总结**
   相对于静态代理，我们的动态代理，减少了我们的工作量，减少了对业务接口的依赖，降低
-了耦合，但是仍然拜托不了，紧支持 interface 代理的桎梏
+了耦合，但是仍然摆脱不了，仅支持 interface 代理的桎梏
 
 ## 3.cglib 代理
  JDK实现动态代理需要实现类通过接口定义业务方法，对于没有接口的类，如何实现动态代理呢，
